@@ -33,7 +33,9 @@
         alias code="code -n"
         alias cat="bat"
         alias ls="eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions"
-
+        
+        alias fuck="thefuck --yeah"
+        
         # Bat Theme Configuration
         export BAT_THEME="gruvbox-dark"
 

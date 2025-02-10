@@ -6,5 +6,6 @@
     "tailscale"      
     "zsh-syntax-highlighting"
     "zsh-autosuggestions"
+    "thefuck"
   ];
 }

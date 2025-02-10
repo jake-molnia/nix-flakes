@@ -3,7 +3,7 @@
   imports = [
     ./casks.nix
     ./brews.nix
-    #./masApps.nix
+    ./masApps.nix
   ];
 
   nix-homebrew = {
