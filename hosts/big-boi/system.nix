@@ -5,13 +5,13 @@
   # =============================================================================
   # Core System Services
   # =============================================================================
-  
+
   # Enable the Nix daemon service
-  services.nix-daemon.enable = true;
-  
+  # services.nix-daemon.enable = true;
+
   # Enable zsh as default shell (default on mac)
   programs.zsh.enable = true;
-  
+
   # System state version (increment only when necessary)
   system.stateVersion = 6;
 
@@ -26,18 +26,18 @@
   # =============================================================================
   nix = {
     package = pkgs.nix;
-    
+
     # Security and binary cache settings
     settings = {
       # Users allowed to perform privileged Nix operations
       trusted-users = [ "@admin" username ];
-      
+
       # Binary cache servers for faster package downloads
       substituters = [
         "https://nix-community.cachix.org"
         "https://cache.nixos.org"
       ];
-      
+
       # Public keys for verifying binary caches
       trusted-public-keys = [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
@@ -46,7 +46,6 @@
 
     # Automatic garbage collection configuration
     gc = {
-      user = "root";
       automatic = true;
       # Run GC weekly on Sunday at 2:00 AM
       interval = { Weekday = 0; Hour = 2; Minute = 0; };
@@ -72,30 +71,30 @@
       # File System Visibility
       AppleShowAllExtensions = true;                          # Show all file extensions
       AppleShowAllFiles = true;                               # Show hidden files
-      
+
       # Keyboard Settings
       ApplePressAndHoldEnabled = false;                       # Disable press-and-hold for keys
       KeyRepeat = 2;                                          # Key repeat rate (2 = fastest, 120 = slowest)
       InitialKeyRepeat = 15;                                  # Delay before key repeat (15 = shortest)
-      
+
       # Regional Settings
       AppleTemperatureUnit = "Celsius";                       # Use Celsius for temperature
       AppleICUForce24HourTime = true;                         # Use 24-hour clock format
-      
+
       # UI/UX Settings
       NSAutomaticWindowAnimationsEnabled = false;             # Disable window animations
       NSTableViewDefaultSizeMode = 1;                         # Finder sidebar icon size (1 = smallest)
       PMPrintingExpandedStateForPrint = true;                 # Expand print panel by default
       _HIHideMenuBar = false;                                 # Show menu bar
-      
+
       # Input Device Settings
       "com.apple.mouse.tapBehavior" = 1;                      # Enable tap to click
       "com.apple.swipescrolldirection" = true;                # Natural scrolling direction
-      
+
       # Sound Settings
       "com.apple.sound.beep.volume" = 0.0;                    # System beep volume
       "com.apple.sound.beep.feedback" = 0;                    # Disable audio feedback
-      
+
       # Theme
       AppleInterfaceStyle = "Dark";                           # Enable dark mode
     };
@@ -136,7 +135,7 @@
 
     # System Update Settings
     SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;   # Auto-install updates
-    
+
     # Window Management
     WindowManager.EnableStandardClickToShowDesktop = false;   # Disable click to show desktop
   };
@@ -144,12 +143,13 @@
   # =============================================================================
   # Additional System Settings
   # =============================================================================
-  
+
   # Disable startup sound
   system.startup.chime = false;
 
   # Enable Touch ID for sudo authentication
-  security.pam.enableSudoTouchIdAuth = true;
+  # security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   environment.systemPackages = with pkgs; [
   ] ++ (import ./packages.nix { inherit pkgs; });
