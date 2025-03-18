@@ -1,162 +1,103 @@
+# Tabbed Segments Starship Prompt Configuration
+
+# Main format - creates tabbed segments similar to the example
 format = """
-[╭](fg:current_line)\
-$directory\
-$git_branch\
-$fill\
-$custom\
-$nodejs\
-$dotnet\
-$python\
-$java\
-$c\
-$cmd_duration\
-$shell\
-$line_break\
-$character\
-"""
+$conda$pyenv$username$directory$git_branch$git_status$kubernetes
+$character"""
 
-palette = 'gruvbox'
-add_newline = true
+# Sets the prompt character (simple arrow on the next line)
+[character]
+success_symbol = "[➜](bold green) "
+error_symbol = "[✗](bold red) "
+vimcmd_symbol = "[❮](bold blue) "
 
-[palettes.dracula]
-foreground = '#F8F8F2'
-background = '#282A36'
-current_line = '#665c54'
-primary = '#1E1F29'
-box = '#44475A'
-blue	= '#6272A4'
-cyan = '#8BE9FD'
-green	= '#50FA7B'
-orange = '#FFB86C'
-pink = '#FF79C6'
-purple = '#BD93F9'
-red	= '#FF5555'
-yellow = '#F1FA8C'
-
-[palettes.gruvbox]
-foreground = '#ebdbb2'
-background = '#282828'
-current_line = '#3c3836'
-primary = '#1d2021'
-box = '#504945'
-blue = '#83a598'
-cyan = '#8ec07c'
-green = '#b8bb26'
-orange = '#fe8019'
-pink = '#d3869b'
-purple = '#b16286'
-red = '#fb4934'
-yellow = '#fabd2f'
-
-[os]
-format = '(fg:current_line)[](fg:red)[$symbol ](fg:primary bg:red)[](fg:red)'
-disabled = false
-
-[os.symbols]
-Alpine = ''
-Amazon = ''
-Android = ''
-Arch = ''
-CentOS = ''
-Debian = ''
-EndeavourOS = ''
-Fedora = ''
-FreeBSD = ''
-Garuda = ''
-Gentoo = ''
-Linux = ''
-Macos = ''
-Manjaro = ''
-Mariner = ''
-Mint = ''
-NetBSD = ''
-NixOS = ''
-OpenBSD = ''
-OpenCloudOS = ''
-openEuler = ''
-openSUSE = ''
-OracleLinux = '⊂⊃'
-Pop = ''
-Raspbian = ''
-Redhat = ''
-RedHatEnterprise = ''
-Solus = ''
-SUSE = ''
-Ubuntu = ''
-Unknown = ''
-Windows = ''
-
-[directory]
-format = '[─](fg:current_line)[](fg:pink)[󰷏 ](fg:primary bg:pink)[](fg:pink bg:box)[ $read_only$truncation_symbol$path](fg:foreground bg:box)[](fg:box)'
-home_symbol = " ~/"
-truncation_symbol = ' '
-truncation_length = 2
-read_only = '󱧵 '
-read_only_style = ''
-
-[git_branch]
-format = '[─](fg:current_line)[](fg:green)[$symbol](fg:primary bg:green)[](fg:green bg:box)[ $branch](fg:foreground bg:box)[](fg:box)'
-symbol = ' '
-
-[custom.nix]
-format = '[─](fg:current_line)[](fg:purple)[$symbol](fg:primary bg:purple)[](fg:purple bg:box)[ $output](fg:foreground bg:box)[](fg:box)'
-symbol = "󱄅 nix"
-when = """ test -n "$IN_NIX_SHELL" """
-command = """
-if [ -n "$IN_NIX_SHELL" ] && [ -f "flake.nix" ]; then
-  grep 'description.*=' flake.nix | sed 's/.*description *= *"//;s/".*//'
-else
-  echo ""
-fi
-"""
-
-[nodejs]
-format = '[─](fg:current_line)[](fg:green)[$symbol](fg:primary bg:green)[](fg:green bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
-symbol = '󰎙 Node.js'
-
-[dotnet]
-format = '[─](fg:current_line)[](fg:purple)[$symbol](fg:primary bg:purple)[](fg:purple bg:box)[ $tfm](fg:foreground bg:box)[](fg:box)'
-symbol = ' .NET'
-
-[python]
-format = '[─](fg:current_line)[](fg:green)[$symbol](fg:primary bg:green)[](fg:green bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
-symbol = ' python'
-
-[java]
-format = '[─](fg:current_line)[](fg:red)[$symbol](fg:primary bg:red)[](fg:red bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
-symbol = ' Java'
-
-[c]
-format = '[─](fg:current_line)[](fg:blue)[$symbol](fg:primary bg:blue)[](fg:blue bg:box)[ $version](fg:foreground bg:box)[](fg:box)'
-symbol = ' C'
-
-[fill]
-symbol = '─'
-style = 'fg:current_line'
-
-[cmd_duration]
-min_time = 500
-format = '[─](fg:current_line)[](fg:orange)[ ](fg:primary bg:orange)[](fg:orange bg:box)[ $duration ](fg:foreground bg:box)[](fg:box)'
-
-[shell]
-format = '[─](fg:current_line)[](fg:blue)[ ](fg:primary bg:blue)[](fg:blue bg:box)[ $indicator](fg:foreground bg:box)[](fg:box)'
-unknown_indicator = 'shell'
-powershell_indicator = 'powershell'
-fish_indicator = 'fish'
-disabled = false
-
-[time]
-format = '[─](fg:current_line)[](fg:purple)[󰦖 ](fg:primary bg:purple)[](fg:purple bg:box)[ $time](fg:foreground bg:box)[](fg:box)'
-time_format = '%H:%M'
-disabled = false
-
+# Username and hostname in a single segment
 [username]
-format = '[─](fg:current_line)[](fg:yellow)[ ](fg:primary bg:yellow)[](fg:yellow bg:box)[ $user](fg:foreground bg:box)[](fg:box) '
+style_user = "bg:#5f5f5f fg:#f8f8f2"
+style_root = "bg:#ff5555 fg:#f8f8f2"
+format = "[ $user@$hostname ]($style)"
+disabled = false
 show_always = true
 
-[character]
-format = """
-[╰─$symbol](fg:current_line) """
-success_symbol = '[](fg:current_line)'
-error_symbol = '[×](fg:bold red)'
+# Directory display as a segment
+[directory]
+truncation_length = 1
+truncation_symbol = ""
+home_symbol = "~"
+read_only = " 🔒"
+style = "bg:#6272a4 fg:#f8f8f2"
+format = "[ $path ]($style)"
 
+# Git branch display as a segment
+[git_branch]
+symbol = ""
+format = "[ git:($branch) ]($style)"
+style = "bg:#bd93f9 fg:#282a36"
+
+# Git status display as a segment
+[git_status]
+format = '[ ±$added_count ]($style)'
+style = "bg:#ff5555 fg:#f8f8f2"
+conflicted = "≠"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕"
+untracked = "?"
+stashed = "≡"
+modified = "!"
+staged = "+"
+renamed = "»"
+deleted = "✘"
+
+# Conda environment
+[conda]
+symbol = ""
+format = "[ condaenv ]($style)"
+style = "bg:#f1fa8c fg:#282a36"
+ignore_base = false
+
+# Python environment
+[python]
+symbol = ""
+pyenv_version_name = true
+format = "[ pyenv ]($style)"
+style = "bg:#ffb86c fg:#282a36"
+
+# Kubernetes context
+[kubernetes]
+symbol = "☸ "
+format = "[ kube-context ]($style)"
+style = "bg:#8be9fd fg:#282a36"
+disabled = false
+
+# Disable command duration to match the example
+[cmd_duration]
+disabled = true
+
+# Disable other elements not seen in the example
+[package]
+disabled = true
+
+[rust]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[memory_usage]
+disabled = true
+
+[battery]
+disabled = true
+
+[time]
+disabled = true
+
+[jobs]
+disabled = true
+
+[docker_context]
+disabled = true
+
+[nix_shell]
+disabled = true
