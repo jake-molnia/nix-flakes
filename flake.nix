@@ -32,15 +32,15 @@
   #
   # These define where Nix should fetch its dependencies. Each input represents
   # a different source that provides functionality to our system.
-  
+
   inputs = {
     # ---------------------------------------------------------------------
     # Core Components
     # ---------------------------------------------------------------------
-    
+
     # The main Nix package collection. We use unstable for latest packages
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    
+
     # Home-manager: Manages user environment configuration
     # This includes user-specific packages, dotfiles, and program settings
     home-manager = {
@@ -52,7 +52,7 @@
     # ---------------------------------------------------------------------
     # Darwin (macOS) Specific Components
     # ---------------------------------------------------------------------
-    
+
     # nix-darwin: Provides macOS system configuration capabilities
     # Similar to NixOS, but for macOS systems
     darwin = {
@@ -86,8 +86,8 @@
   # This section defines the actual system configurations and how they should
   # be built. It takes the inputs defined above and produces concrete system
   # configurations.
-  
-  outputs = { self, nixpkgs, home-manager, darwin, nix-homebrew, homebrew-core, 
+
+  outputs = { self, nixpkgs, home-manager, darwin, nix-homebrew, homebrew-core,
               homebrew-cask, homebrew-bundle, ... }:
     let
       # ---------------------------------------------------------------------
@@ -100,7 +100,7 @@
       # - hostPath: Path to the host-specific configuration
       # - username: The primary user account
 	  # - homeDirectory: The primary users home directory
-      
+
       systems = {
         # Apple Silicon MacBook Configuration
         big-boi = {
@@ -108,9 +108,9 @@
           type = "darwin";              # macOS system
           hostPath = ./hosts/big-boi;
           username = "jake";
-		      homeDirectory = "/Users/jake"; 
+		      homeDirectory = "/Users/jake";
         };
-		/* 
+		/*
         # Intel Mac Configuration (e.g., for work)
         work-intel-mac = {
           system = "x86_64-darwin";     # Intel architecture
@@ -132,7 +132,7 @@
       # ---------------------------------------------------------------------
       # Helper Functions
       # ---------------------------------------------------------------------
-      
+
       # Generate attributes for all supported system types
       # This helps us create configurations for each architecture
       forAllSystems = nixpkgs.lib.genAttrs [
@@ -141,30 +141,37 @@
         "x86_64-linux"     # Standard Linux systems
       ];
 
+      nixpkgsWithConfig = system: import nixpkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
+          # You can add more Nixpkgs configuration here
+        };
+      };
+
       # ---------------------------------------------------------------------
       # System Builders
       # ---------------------------------------------------------------------
-      
+
       # Darwin (macOS) System Builder
       # This function creates a complete Darwin system configuration including:
       # - Basic system configuration
       # - Homebrew integration
       # - Home-manager user configuration
+      # Update the mkDarwinSystem function:
       mkDarwinSystem = { system, hostPath, username, homeDirectory, ... }: darwin.lib.darwinSystem {
         inherit system;
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = nixpkgsWithConfig system; # Changed this line
         modules = [
-          # Enable Homebrew management through Nix
           nix-homebrew.darwinModules.nix-homebrew
-          # Enable home-manager integration
           home-manager.darwinModules.home-manager
-          # Import the host-specific configuration
           (import (hostPath + /default.nix) {
-            pkgs = nixpkgs.legacyPackages.${system};
+            pkgs = nixpkgsWithConfig system; # Changed this line too
             inherit homebrew-core homebrew-cask homebrew-bundle username homeDirectory;
           })
         ];
       };
+
 
       # NixOS System Builder
       # Creates a complete NixOS system configuration including:
@@ -190,7 +197,7 @@
       # ---------------------------------------------------------------------
       # Output Definitions
       # ---------------------------------------------------------------------
-      
+
       # Define packages for each supported system
       # This combines both Darwin and NixOS packages into a single attribute set
       packages = forAllSystems (system:

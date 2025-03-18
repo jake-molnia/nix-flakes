@@ -2,34 +2,29 @@
 { pkgs, ... }:
 {
   homebrew.casks = [
-    # Add your casks here
-    "visual-studio-code"
-    "git-credential-manager" # Secure Git credentials storage
-    "tempbox" # Temporary email address generator
-    "arc" # Modern web browser with built-in split view and spaces
-    "arduino-ide" # IDE for Arduino development
-    "battery-buddy" # Battery health monitoring and optimization
-    "betterdisplay" # External display management and configuration
-    "itsycal" # Minimal calendar for menu bar
-    "obs" # Open Broadcaster Software for streaming and recording
-    "steam" # Gaming platform and store
-    "teamviewer" # Remote desktop and support software
-    "whatsapp" # Desktop client for WhatsApp messaging
-    "maccy" # Clipboard manager for macOS
-    "raycast" # Spotlight replacement with extended features
-    "spotify" # Music streaming service
-    "rectangle" # Window management tool
-    "slack" # Business communication platform
-    "discord" # Voice, video, and text chat platform
-    "zoom" # Video conferencing software
-    "microsoft-teams" # Microsoft Teams collaboration platform
-    "alt-tab"
-    "smoothscroll"
-    "logi-options+"
-    "utm"
-    "obsidian"
-    "copilot"
+    # macOS-specific applications
+    "alt-tab"              # Window switcher
+    "arc"                  # Modern web browser
+    "arduino-ide"          # Arduino development
+    "battery-buddy"        # Battery health monitor
+    "betterdisplay"        # Display management
+    "copilot"              # GitHub Copilot app
+    "git-credential-manager" # Git authentication
+    "itsycal"              # Menu bar calendar
+    "logi-options+"        # Logitech peripheral manager
+    "maccy"                # Clipboard manager
+    "microsoft-teams"      # Microsoft Teams
+    "raycast"              # Spotlight replacement
+    "rectangle"            # Window management
+    "slack"                # Business communication
+    "smoothscroll"         # Smooth scrolling utility
+    "steam"                # Gaming platform
+    "teamviewer"           # Remote desktop
+    "tempbox"              # Temporary email generator
+    "utm"                  # Virtualization
+    "whatsapp"             # Messaging app
+    "zoom"                 # Video conferencing
+    "obs"
     "ghostty"
-    "zed"
   ];
 }

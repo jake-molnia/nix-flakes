@@ -17,13 +17,34 @@ with pkgs; [
   nmap
 
   # Development Tools
-  #vscode       # Code editor
   devenv # Development environments
   docker
   docker-compose
 
+  # Terminal Applications
+  zed # Modern editor
+
+  # Development Dependencies
+  mpdecimal
+  openssl
+  readline
+  sqlite
+  xz
+
+  # CLI Tools from Homebrew
+  tailscale # VPN service
+  # thefuck # Corrects previous console command
+  zsh-autosuggestions # Command suggestions
+  zsh-syntax-highlighting # Syntax highlighting
+
+  # GUI Applications
+  vscode # Code editor
+  obsidian # Note-taking app
+  spotify # Music streaming
+  discord # Communication platform
+
   # Python Development
-  python3
+  python313 # Python 3.13
   pipx # Python application installer
   micromamba # Lightweight conda alternative
   jupyter # Interactive computing
@@ -38,5 +59,5 @@ with pkgs; [
   # Shell Customization
   oh-my-zsh # Zsh configuration framework
   tlrc # Terminal configuration tool
-  neovim # Text editor (commented but working)
+  neovim # Text editor
 ]

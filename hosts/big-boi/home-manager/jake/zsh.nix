@@ -26,16 +26,18 @@
       )
 
       source $ZSH/oh-my-zsh.sh
-      source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-      source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+      # Use nix-installed plugins instead of Homebrew
+      source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+      source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
       # Custom Aliases
       alias code="code -n"
       alias cat="bat"
       alias ls="eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions"
-        
+
       alias fuck="thefuck --yeah"
-        
+
       # Bat Theme Configuration
       export BAT_THEME="gruvbox-dark"
 
@@ -53,6 +55,19 @@
       # <<< mamba initialize <<<
       printf '\eP$f{"hook": "SourcedRcFileForWarp", "value": { "shell": "zsh"}}\x9c'
     '';
-  };
 
+    # Add plugin configuration here using home-manager
+    plugins = [
+      {
+        name = "zsh-syntax-highlighting";
+        src = pkgs.zsh-syntax-highlighting;
+        file = "share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
+      }
+      {
+        name = "zsh-autosuggestions";
+        src = pkgs.zsh-autosuggestions;
+        file = "share/zsh-autosuggestions/zsh-autosuggestions.zsh";
+      }
+    ];
+  };
 }
