@@ -7,7 +7,7 @@
     "arc"                  # Modern web browser
     "arduino-ide"          # Arduino development
     "battery-buddy"        # Battery health monitor
-    "betterdisplay"        # Display management
+    "monitorcontrol"       # Display management
     "copilot"              # GitHub Copilot app
     "git-credential-manager" # Git authentication
     "itsycal"              # Menu bar calendar
@@ -26,6 +26,5 @@
     "zoom"                 # Video conferencing
     "obs"
     "ghostty"
-    "monitorcontrol"
   ];
 }
