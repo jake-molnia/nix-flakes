@@ -26,5 +26,6 @@
     "zoom"                 # Video conferencing
     "obs"
     "ghostty"
+    "monitorcontrol"
   ];
 }
