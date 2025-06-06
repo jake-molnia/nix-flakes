@@ -1,0 +1,46 @@
+# <type>(<scope>): <subject>
+#
+# <body>
+#
+# <footer>
+
+# --- COMMIT END ---
+# Type can be 
+#    feat     (new feature)
+#    fix      (bug fix)
+#    refactor (refactoring code)
+#    style    (formatting, missing semi colons, etc; no code change)
+#    docs     (changes to documentation)
+#    test     (adding or refactoring tests; no production code change)
+#    chore    (updating build tasks, package manager configs, etc; no production code change)
+# --------------------
+# Scope is just the scope of the change, e.g.
+#    init, runner, watcher, config, web-server, proxy, etc.
+# --------------------
+# Subject line rules:
+#    - Use imperative, present tense: "change" not "changed" nor "changes"
+#    - Don't capitalize first letter
+#    - No dot (.) at the end
+#    - Keep under 50 characters
+# --------------------
+# Body rules:
+#    - Use imperative, present tense: "change" not "changed" nor "changes"
+#    - Wrap at 72 characters
+#    - Explain what and why, not how
+# --------------------
+# Footer should contain any BREAKING CHANGES and
+# is also the place to reference GitHub issues that this commit closes
+# --------------------
+# Examples:
+#    feat(auth): add OAuth login support
+#    
+#    fix(api): handle null response in user endpoint
+#    
+#    docs: update installation instructions
+#    
+#    feat(ui): add dark mode toggle
+#    
+#    This adds a toggle button in the header that allows
+#    users to switch between light and dark themes.
+#    
+#    Closes #123

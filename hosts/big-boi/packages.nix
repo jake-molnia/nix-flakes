@@ -2,7 +2,6 @@
 
 with pkgs; [
   # Terminal Essentials
-  alacritty # Modern terminal emulator
   starship # Cross-shell prompt
   tmux # Terminal multiplexer
 
@@ -20,7 +19,7 @@ with pkgs; [
   devenv # Development environments
   docker
   docker-compose
-
+  just
   # Terminal Applications
   zed # Modern editor
 
@@ -36,6 +35,7 @@ with pkgs; [
   # thefuck # Corrects previous console command
   zsh-autosuggestions # Command suggestions
   zsh-syntax-highlighting # Syntax highlighting
+  diff-so-fancy
 
   # GUI Applications
   vscode # Code editor

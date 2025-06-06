@@ -15,6 +15,8 @@
   # System state version (increment only when necessary)
   system.stateVersion = 6;
 
+  system.primaryUser = "jake";
+
   # Configure the primary user account
   users.users.${username} = {
     name = username;
