@@ -35,7 +35,9 @@
       alias code="code -n"
       alias cat="bat"
       alias ls="eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions"
-
+      alias gs="git status --short"
+      alias gd="git diff --output-indicator-new=' ' --output-indicator-old=' '"
+      alias gap="git add --patch"
       alias fuck="thefuck --yeah"
 
       # Bat Theme Configuration

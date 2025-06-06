@@ -15,7 +15,7 @@
         compression = 9;
         whitespace = "error";
         preloadindex = true;
-        editor = "vim";
+        editor = "nvim";
         autocrlf = "input";
       };
       advice = {
