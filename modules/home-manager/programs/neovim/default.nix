@@ -3,16 +3,13 @@
 {
   programs.neovim = {
     enable = true;
-    
-    # This will automatically source all files from the nvim directory
-    extraConfig = ''
-      ${builtins.readFile ./files/nvim/init.lua}
-    '';
+    # TODO: is this actually needed? or is the xdg load fine?    
+    extraConfig = ''${builtins.readFile ./config/init.lua}'';
   };
 
   # This creates a symlink of your entire nvim config directory in the right place
   xdg.configFile."nvim" = {
-    source = ./files/nvim;
+    source = ./config; 
     recursive = true;   # This ensures all subdirectories are included
   };
 }

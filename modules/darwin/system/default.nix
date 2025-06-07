@@ -1,6 +1,6 @@
 # system.nix
 # Comprehensive system configuration for Darwin (macOS)
-{ pkgs, username, homeDirectory, ... }:
+{ pkgs, ... }:
 {
   # =============================================================================
   # Core System Services
@@ -18,9 +18,9 @@
   system.primaryUser = "jake";
 
   # Configure the primary user account
-  users.users.${username} = {
-    name = username;
-    home = homeDirectory;
+  users.users.jake = {
+    name = "jake";
+    home = "/Users/jake";
   };
 
   # =============================================================================
@@ -32,7 +32,7 @@
     # Security and binary cache settings
     settings = {
       # Users allowed to perform privileged Nix operations
-      trusted-users = [ "@admin" username ];
+      trusted-users = [ "@admin" "jake" ];
 
       # Binary cache servers for faster package downloads
       substituters = [
@@ -154,7 +154,7 @@
   security.pam.services.sudo_local.touchIdAuth = true;
 
   environment.systemPackages = with pkgs; [
-  ] ++ (import ./packages.nix { inherit pkgs; });
+] ++ (import ../../../packages/core.nix { inherit pkgs; });
 
   fonts.packages = with pkgs; [
     nerd-fonts.hack

@@ -52,5 +52,5 @@
       };
     };
   };
-  xdg.configFile."git/commit-template".text = builtins.readFile ./files/git/commit-template;
+  xdg.configFile."git/commit-template".text = builtins.readFile ./config/commit-template;
 }
