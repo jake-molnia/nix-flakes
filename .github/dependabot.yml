@@ -1,0 +1,37 @@
+# .github/dependabot.yml
+version: 2
+
+updates:
+  # Keep GitHub Actions up to date
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    reviewers:
+      - "jake-molnia"
+    open-pull-requests-limit: 5
+
+  # Update Nix flake inputs
+  - package-ecosystem: "docker"  # Hack: use docker ecosystem for custom commands
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:30"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "nix-flake"
+    reviewers:
+      - "jake-molnia"
+    open-pull-requests-limit: 3
