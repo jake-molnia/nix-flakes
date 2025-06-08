@@ -29,7 +29,7 @@ jobs:
         run: nix flake check --all-systems --no-build
 
       - name: Run flake checker
-        uses: DeterminateSystems/flake-checker-action@v4
+        uses: DeterminateSystems/flake-checker-action@v10
 
   discover-systems:
     name: Discover System Configurations
