@@ -1,0 +1,99 @@
+# .github/workflows/scheduled.yml
+name: Scheduled Health Check
+
+on:
+  schedule:
+    # Run every Monday at 6:00 AM UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  health-check:
+    name: Weekly System Health Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v9
+
+      - name: Setup Nix Magic Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v2
+
+      - name: Check flake health
+        run: nix flake check --all-systems --no-build
+
+      - name: Discover systems
+        id: discover
+        run: |
+          darwin_systems=$(nix eval --json .#darwinConfigurations --apply builtins.attrNames || echo '[]')
+          nixos_systems=$(nix eval --json .#nixosConfigurations --apply builtins.attrNames || echo '[]')
+          echo "darwin-systems=$darwin_systems" >> $GITHUB_OUTPUT
+          echo "nixos-systems=$nixos_systems" >> $GITHUB_OUTPUT
+
+      - name: Test build Darwin systems
+        if: steps.discover.outputs.darwin-systems != '[]'
+        run: |
+          darwin_systems='${{ steps.discover.outputs.darwin-systems }}'
+          echo "Testing Darwin systems: $darwin_systems"
+          for system in $(echo $darwin_systems | jq -r '.[]'); do
+            echo "Testing build for Darwin system: $system"
+            nix build .#darwinConfigurations.$system.system --dry-run
+          done
+
+      - name: Test build NixOS systems
+        if: steps.discover.outputs.nixos-systems != '[]'
+        run: |
+          nixos_systems='${{ steps.discover.outputs.nixos-systems }}'
+          echo "Testing NixOS systems: $nixos_systems"
+          for system in $(echo $nixos_systems | jq -r '.[]'); do
+            echo "Testing build for NixOS system: $system"
+            nix build .#nixosConfigurations.$system.config.system.build.toplevel --dry-run
+          done
+
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `Scheduled Health Check Failed - ${new Date().toISOString().split('T')[0]}`;
+            const body = `
+            ## Weekly Health Check Failed
+            
+            The scheduled health check for the Nix configuration failed.
+            
+            **Failure Details:**
+            - Workflow: ${{ github.workflow }}
+            - Run ID: ${{ github.run_id }}
+            - Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            This could indicate:
+            - Upstream package breakages
+            - Flake input conflicts
+            - Configuration syntax issues
+            
+            Please review the logs and fix any issues.
+            `;
+            
+            // Check if there's already an open issue for this week
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['scheduled-health-check', 'automated']
+            });
+            
+            const existingIssue = issues.data.find(issue => 
+              issue.title.includes(new Date().toISOString().split('T')[0])
+            );
+            
+            if (!existingIssue) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['scheduled-health-check', 'automated', 'bug']
+              });
+            }

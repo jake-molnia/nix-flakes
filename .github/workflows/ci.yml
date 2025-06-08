@@ -1,0 +1,130 @@
+# .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flake-check:
+    name: Flake Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v9
+
+      - name: Setup Nix Magic Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v2
+
+      - name: Check flake
+        run: nix flake check --all-systems --no-build
+
+      - name: Run flake checker
+        uses: DeterminateSystems/flake-checker-action@v4
+
+  discover-systems:
+    name: Discover System Configurations
+    runs-on: ubuntu-latest
+    outputs:
+      darwin-systems: ${{ steps.discover.outputs.darwin-systems }}
+      nixos-systems: ${{ steps.discover.outputs.nixos-systems }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v9
+
+      - name: Setup Nix Magic Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v2
+
+      - name: Discover configurations
+        id: discover
+        run: |
+          # Discover Darwin systems
+          darwin_systems=$(nix eval --json .#darwinConfigurations --apply builtins.attrNames || echo '[]')
+          echo "darwin-systems=$darwin_systems" >> $GITHUB_OUTPUT
+          echo "Found Darwin systems: $darwin_systems"
+          
+          # Discover NixOS systems
+          nixos_systems=$(nix eval --json .#nixosConfigurations --apply builtins.attrNames || echo '[]')
+          echo "nixos-systems=$nixos_systems" >> $GITHUB_OUTPUT
+          echo "Found NixOS systems: $nixos_systems"
+
+  build-darwin:
+    name: Build Darwin Systems
+    runs-on: macos-latest
+    needs: [flake-check, discover-systems]
+    if: needs.discover-systems.outputs.darwin-systems != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        system: ${{ fromJSON(needs.discover-systems.outputs.darwin-systems) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v9
+
+      - name: Setup Nix Magic Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v2
+
+      - name: Build ${{ matrix.system }}
+        run: |
+          echo "Building Darwin system: ${{ matrix.system }}"
+          nix build .#darwinConfigurations.${{ matrix.system }}.system
+
+  build-nixos:
+    name: Build NixOS Systems
+    runs-on: ubuntu-latest
+    needs: [flake-check, discover-systems]
+    if: needs.discover-systems.outputs.nixos-systems != '[]'
+    strategy:
+      fail-fast: false
+      matrix:
+        system: ${{ fromJSON(needs.discover-systems.outputs.nixos-systems) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v9
+
+      - name: Setup Nix Magic Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v2
+
+      - name: Build ${{ matrix.system }}
+        run: |
+          echo "Building NixOS system: ${{ matrix.system }}"
+          nix build .#nixosConfigurations.${{ matrix.system }}.config.system.build.toplevel
+
+  dead-code-check:
+    name: Dead Code Detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v9
+
+      - name: Setup Nix Magic Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v2
+
+      - name: Install statix
+        run: nix profile install nixpkgs#statix
+
+      - name: Run dead code analysis
+        run: |
+          echo "Checking for dead code and unused imports..."
+          statix check .
