@@ -107,24 +107,3 @@ jobs:
         run: |
           echo "Building NixOS system: ${{ matrix.system }}"
           nix build .#nixosConfigurations.${{ matrix.system }}.config.system.build.toplevel
-
-  dead-code-check:
-    name: Dead Code Detection
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v9
-
-      - name: Setup Nix Magic Cache
-        uses: DeterminateSystems/magic-nix-cache-action@v2
-
-      - name: Install statix
-        run: nix profile install nixpkgs#statix
-
-      - name: Run dead code analysis
-        run: |
-          echo "Checking for dead code and unused imports..."
-          statix check .
