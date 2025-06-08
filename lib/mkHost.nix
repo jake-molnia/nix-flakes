@@ -1,46 +1,39 @@
 # lib/mkHost.nix
-# Host builder functions that handle profiles and features
 
 { nixpkgs, darwin, home-manager, nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle }:
 
 let
   utils = import ./utils.nix { inherit nixpkgs; };
 
-  # Build home-manager configuration based on profiles and features
   mkHomeManagerConfig = { system, type, profiles, features, username, homeDirectory }:
     { pkgs, ... }: {
+      # TODO: look at this number 
       home.stateVersion = "23.11";
       
       imports = 
-        # Import profile modules (if they have home-manager config)
         (map (profile: ../profiles/${profile}.nix) profiles) ++
-        # Import feature modules (home-manager programs) based on enabled features
         (builtins.filter (x: x != null) (nixpkgs.lib.mapAttrsToList (name: enabled: 
           if enabled then ../modules/home-manager/programs/${name} else null
-        ) features));
+        ) (features.programs or {})));
       
       _module.args = { inherit username homeDirectory; };
     };
 
-  # Build system modules based on configuration (SYSTEM LEVEL ONLY)
   mkSystemModules = { system, type, profiles, features, username, homeDirectory }:
     let
-      # Auto-load base modules based on system type
       baseModules = {
         darwin = [
-          ../modules/darwin/system      # Always load for any Darwin system
-          ../modules/darwin/homebrew    # Always available (profile controls usage)
-        ];
+          # FIXME: this will be split into multiple files and then this line is broken
+          ../modules/darwin/system      
+        ] ++ (if (features.darwin.homebrew or false) 
+              then [ ../modules/darwin/homebrew ] 
+              else []);
         nixos = [
           ../modules/nixos/system
-          # Add nixos modules here when you create them
         ];
       };
 
-      # Profile-based modules (these modify behavior of base modules)
       profileModules = map (profile: ../profiles/${profile}.nix) profiles;
-      
-      # NOTE: Feature modules are handled in mkHomeManagerConfig, not here
       
     in (baseModules.${type} or []) ++ profileModules;
 

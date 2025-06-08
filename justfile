@@ -16,7 +16,7 @@ update:
     nix flake update
 
 check:
-    nix flake check
+    nix flake check --all-systems
 
 clean:
     sudo nix-collect-garbage -d
