@@ -3,7 +3,7 @@
 # =============================================================================
 #
 # Author: Jacob Molnia
-# Last Updated: 2024
+# Last Updated: 2025
 #
 # This configuration manages multiple systems including Darwin (macOS) and NixOS.
 # It provides a unified way to handle different architectures and system types
